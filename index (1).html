@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GA4 Frontend Error Test</title>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-T8KKQSQC');</script>
+  <!-- End Google Tag Manager -->
+
+  <!-- GA4 직접 연결 (GTM 외 fallback 겸용) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHZHNB0YLT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MHZHNB0YLT', { 'debug_mode': true });
+  </script>
+
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3e;
+      --accent-blue: #4f8ef7;
+      --accent-red: #f74f4f;
+      --accent-yellow: #f7c94f;
+      --accent-green: #4ff7a0;
+      --text: #e8eaf0;
+      --text-muted: #6b7280;
+      --font-mono: 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .ids {
+      margin-top: 10px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .id-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      color: var(--accent-blue);
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-red    { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
+    .dot-yellow { background: var(--accent-yellow); box-shadow: 0 0 6px var(--accent-yellow); }
+    .dot-blue   { background: var(--accent-blue); box-shadow: 0 0 6px var(--accent-blue); }
+
+    .card h3 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .card code {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--accent-green);
+      margin-bottom: 14px;
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:hover  { opacity: 0.85; }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-red    { background: var(--accent-red);    color: #fff; }
+    .btn-yellow { background: var(--accent-yellow); color: #111; }
+    .btn-blue   { background: var(--accent-blue);   color: #fff; }
+
+    /* GEM 전송 섹션 */
+    .gem-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+
+    .gem-section h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .gem-section p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .input-row input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font-mono);
+    }
+
+    .input-row input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+
+    .btn-send {
+      background: var(--accent-green);
+      color: #111;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-send:hover { opacity: 0.85; }
+
+    /* 로그 패널 */
+    .log-section { margin-bottom: 40px; }
+
+    #log-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.8;
+      min-height: 180px;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      display: flex;
+      gap: 12px;
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; } }
+
+    .log-time  { color: var(--text-muted); flex-shrink: 0; }
+    .log-type  { flex-shrink: 0; min-width: 80px; font-weight: 700; }
+    .log-type.js_error  { color: var(--accent-red); }
+    .log-type.api_fail  { color: var(--accent-yellow); }
+    .log-type.render_fail { color: var(--accent-blue); }
+    .log-type.gem_send  { color: var(--accent-green); }
+    .log-type.gem_fail  { color: var(--accent-red); }
+    .log-msg   { color: var(--text); word-break: break-all; }
+
+    .log-empty { color: var(--text-muted); padding: 8px 0; }
+
+    .clear-btn {
+      font-size: 11px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      padding: 3px 10px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 8px;
+    }
+    .clear-btn:hover { color: var(--text); }
+  </style>
+</head>
+
+<body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8KKQSQC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<header>
+  <h1>GA4 Frontend Error Test</h1>
+  <p>오류 유형별 dataLayer.push → GA4 DebugView 수신 확인 + GEM Mock 전송 테스트</p>
+  <div class="ids">
+    <span class="id-badge">GTM-T8KKQSQC</span>
+    <span class="id-badge">G-MHZHNB0YLT</span>
+  </div>
+</header>
+
+<!-- 오류 발생 카드들 -->
+<div class="section-title">오류 유형별 이벤트 발생</div>
+<div class="grid">
+
+  <!-- JS Runtime Error -->
+  <div class="card">
+    <div class="card-header">
+      <div class="dot dot-red"></div>
+      <h3>JS Runtime Error</h3>
+    </div>
+    <p>undefined 변수 참조 오류를 강제 발생시킵니다.<br>window.onerror 핸들러가 잡아서 GA4로 전송합니다.</p>
+    <code>error_type: "js_error"
+error_severity: "critical"
+error_message: "Cannot read properties
+  of undefined"
+error_page: "/test"</code>
+    <button class="btn btn-red" onclick="triggerJsError()">JS 오류 발생</button>
+  </div>
+
+  <!-- API Fail -->
+  <div class="card">
+    <div class="card-header">
+      <div class="dot dot-yellow"></div>
+      <h3>API Fail</h3>
+    </div>
+    <p>존재하지 않는 엔드포인트로 fetch를 호출하여<br>404 오류를 발생시킵니다.</p>
+    <code>error_type: "api_fail"
+error_severity: "critical"
+error_code: "404"
+error_message: "GET /api/test/user → 404"
+error_page: "/test"</code>
+    <button class="btn btn-yellow" onclick="triggerApiFail()">API 오류 발생</button>
+  </div>
+
+  <!-- Render Fail -->
+  <div class="card">
+    <div class="card-header">
+      <div class="dot dot-blue"></div>
+      <h3>핵심 화면 렌더 실패</h3>
+    </div>
+    <p>핵심 UI 요소가 렌더링되지 않은 상황을<br>시뮬레이션합니다. (개발팀이 조건 판단 후 push)</p>
+    <code>error_type: "render_fail"
+error_severity: "critical"
+error_message: "MainDashboard
+  component failed to mount"
+error_page: "/test"</code>
+    <button class="btn btn-blue" onclick="triggerRenderFail()">렌더 실패 발생</button>
+  </div>
+
+</div>
+
+<!-- GEM Mock 전송 -->
+<div class="section-title">GEM Mock API 전송 테스트</div>
+<div class="gem-section">
+  <h3>GEM Webhook URL 입력</h3>
+  <p>
+    실제 GEM API가 없을 경우 <strong style="color:var(--accent-green)">webhook.site</strong>에서 무료 URL을 발급받아 붙여넣으세요.<br>
+    오류 버튼 클릭 시 GA4 전송과 동시에 이 URL로도 POST 요청이 전송됩니다.
+  </p>
+  <div class="input-row">
+    <input type="text" id="gem-url" placeholder="https://webhook.site/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+    <button class="btn-send" onclick="saveGemUrl()">저장</button>
+  </div>
+  <p id="gem-url-status" style="font-size:12px; color:var(--text-muted);"></p>
+</div>
+
+<!-- 로그 패널 -->
+<div class="log-section">
+  <div class="section-title">
+    이벤트 로그
+    <button class="clear-btn" onclick="clearLog()">초기화</button>
+  </div>
+  <div id="log-panel">
+    <div class="log-empty" id="log-empty">버튼을 클릭하면 여기에 이벤트 로그가 표시됩니다.</div>
+  </div>
+</div>
+
+<script>
+  // ── 공통 유틸 ────────────────────────────────────────────────
+  let gemUrl = '';
+
+  function now() {
+    return new Date().toLocaleTimeString('ko-KR', { hour12: false });
+  }
+
+  function addLog(type, message) {
+    const panel = document.getElementById('log-panel');
+    const empty = document.getElementById('log-empty');
+    if (empty) empty.remove();
+
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `
+      <span class="log-time">${now()}</span>
+      <span class="log-type ${type}">${type}</span>
+      <span class="log-msg">${message}</span>
+    `;
+    panel.prepend(entry);
+  }
+
+  function clearLog() {
+    const panel = document.getElementById('log-panel');
+    panel.innerHTML = '<div class="log-empty" id="log-empty">버튼을 클릭하면 여기에 이벤트 로그가 표시됩니다.</div>';
+  }
+
+  function saveGemUrl() {
+    const input = document.getElementById('gem-url').value.trim();
+    const status = document.getElementById('gem-url-status');
+    if (input.startsWith('http')) {
+      gemUrl = input;
+      status.style.color = 'var(--accent-green)';
+      status.textContent = '✓ 저장됨 — 이제 오류 버튼 클릭 시 이 URL로 동시 전송됩니다.';
+    } else {
+      status.style.color = 'var(--accent-red)';
+      status.textContent = '올바른 URL을 입력해주세요.';
+    }
+  }
+
+  // ── GA4 이벤트 전송 (dataLayer.push) ────────────────────────
+  function sendToGA4(payload) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(payload);
+    addLog(payload.error_type, `GA4 전송 → event: ${payload.event} | ${payload.error_message}`);
+  }
+
+  // ── GEM Mock 전송 ────────────────────────────────────────────
+  function sendToGEM(payload) {
+    if (!gemUrl) return;
+
+    const body = {
+      source: 'ga4_frontend_error_test',
+      timestamp: new Date().toISOString(),
+      ...payload
+    };
+
+    fetch(gemUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(res => {
+      addLog('gem_send', `GEM 전송 성공 (HTTP ${res.status}) → ${payload.error_type}`);
+    })
+    .catch(err => {
+      addLog('gem_fail', `GEM 전송 실패 → ${err.message}`);
+    });
+  }
+
+  // ── 오류 발생 함수들 ─────────────────────────────────────────
+
+  // 1) JS Runtime Error
+  function triggerJsError() {
+    const payload = {
+      event: 'frontend_error',
+      error_type: 'js_error',
+      error_severity: 'critical',
+      error_message: 'Cannot read properties of undefined (reading "userId")',
+      error_page: window.location.pathname || '/test',
+      error_code: ''
+    };
+    sendToGA4(payload);
+    sendToGEM(payload);
+
+    // 실제 JS 오류도 발생시켜서 window.onerror 핸들러도 테스트
+    try {
+      const x = undefined;
+      x.userId; // 강제 오류
+    } catch(e) {
+      // window.onerror에서 별도 처리 (아래 핸들러 참고)
+    }
+  }
+
+  // 2) API Fail
+  async function triggerApiFail() {
+    const endpoint = 'https://httpstat.us/500'; // 500 반환하는 테스트 URL
+    try {
+      const res = await fetch(endpoint);
+      if (!res.ok) {
+        const payload = {
+          event: 'frontend_error',
+          error_type: 'api_fail',
+          error_severity: 'critical',
+          error_code: String(res.status),
+          error_message: `GET ${endpoint} → ${res.status}`,
+          error_page: window.location.pathname || '/test'
+        };
+        sendToGA4(payload);
+        sendToGEM(payload);
+      }
+    } catch(e) {
+      const payload = {
+        event: 'frontend_error',
+        error_type: 'api_fail',
+        error_severity: 'critical',
+        error_code: 'NETWORK_ERROR',
+        error_message: `fetch failed: ${e.message}`,
+        error_page: window.location.pathname || '/test'
+      };
+      sendToGA4(payload);
+      sendToGEM(payload);
+    }
+  }
+
+  // 3) Render Fail
+  function triggerRenderFail() {
+    const payload = {
+      event: 'frontend_error',
+      error_type: 'render_fail',
+      error_severity: 'critical',
+      error_message: 'MainDashboard component failed to mount',
+      error_page: window.location.pathname || '/test',
+      error_code: ''
+    };
+    sendToGA4(payload);
+    sendToGEM(payload);
+  }
+
+  // ── window.onerror 전역 핸들러 ───────────────────────────────
+  // 실제 서비스에서 개발팀이 삽입하는 방식과 동일하게 시뮬레이션
+  window.onerror = function(message, source, lineno, colno, error) {
+    // triggerJsError에서 이미 수동으로 push했으므로 중복 방지
+    // 실제 환경에서는 이 핸들러 하나로 모든 JS 오류를 잡음
+    return false;
+  };
+
+  window.addEventListener('unhandledrejection', function(event) {
+    const payload = {
+      event: 'frontend_error',
+      error_type: 'js_error',
+      error_severity: 'critical',
+      error_message: `Unhandled Promise Rejection: ${event.reason}`,
+      error_page: window.location.pathname || '/test',
+      error_code: ''
+    };
+    sendToGA4(payload);
+    sendToGEM(payload);
+  });
+</script>
+
+</body>
+</html>
